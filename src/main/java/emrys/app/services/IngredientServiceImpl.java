@@ -8,12 +8,13 @@ import emrys.app.domain.Ingredient;
 import emrys.app.domain.Recipe;
 import emrys.app.repositories.RecipeRepository;
 import emrys.app.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Set;
-
+@Slf4j
 @Service
 public class IngredientServiceImpl implements IngredientService  {
 
@@ -57,10 +58,11 @@ public class IngredientServiceImpl implements IngredientService  {
     @Override
     public IngredientCommand saveIngerdientCommand(IngredientCommand command) {
 
-        Optional<Recipe> recipeOptional=recipeRepository.findById(command.getId());
+        Optional<Recipe> recipeOptional=recipeRepository.findById(command.getRecipeId());
 
         if(!recipeOptional.isPresent())
         {
+            log.error("Recipe not found for id: " + command.getRecipeId());
             return new IngredientCommand();
         }else
         {
@@ -72,6 +74,7 @@ public class IngredientServiceImpl implements IngredientService  {
 
             if(ingredientOptional.isPresent()) {
                 Ingredient ingredientFound = ingredientOptional.get();
+                ingredientFound.setAmount(command.getAmount());
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
                 .orElseThrow(()->new RuntimeException("UOM NOT FOUND")));
@@ -88,4 +91,6 @@ public class IngredientServiceImpl implements IngredientService  {
 
 
     }
+
+
 }
