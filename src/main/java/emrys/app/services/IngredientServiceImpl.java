@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.Set;
 @Slf4j
 @Service
@@ -79,7 +78,6 @@ public class IngredientServiceImpl implements IngredientService  {
                 ingredientFound.setDescription(command.getDescription());
                 ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId())
                 .orElseThrow(()->new RuntimeException("UOM NOT FOUND")));
-
             }
             else
             {
@@ -94,7 +92,6 @@ public class IngredientServiceImpl implements IngredientService  {
                     .filter(recipeIngredients->recipeIngredients.getId().equals(command.getId()))
                     .findFirst();
 
-
             if(!savedIngredientOptional.isPresent()) {
 
                 savedIngredientOptional = savedRecipe.getIngredients().stream()
@@ -102,9 +99,7 @@ public class IngredientServiceImpl implements IngredientService  {
                         .filter(recipeIngredients -> recipeIngredients.getAmount().equals(command.getAmount()))
                         .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
                         .findFirst();
-
             }
-
 
             return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
         }
@@ -141,7 +136,6 @@ public class IngredientServiceImpl implements IngredientService  {
                 recipe.getIngredients().remove(ingredient);
 
                 log.info("size of ingredient  after removal: " + recipe.getIngredients().size());
-                recipe.getIngredients().stream().forEach(System.out::println);
                 recipeRepository.save(recipe);
             }
             else
@@ -152,9 +146,5 @@ public class IngredientServiceImpl implements IngredientService  {
         else{
             log.error("recipe with id: " + recipeId + " Not Found !");
         }
-
-
     }
-
-
 }
