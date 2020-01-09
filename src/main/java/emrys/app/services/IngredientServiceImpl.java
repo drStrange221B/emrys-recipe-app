@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 @Slf4j
 @Service
@@ -82,11 +83,74 @@ public class IngredientServiceImpl implements IngredientService  {
             }
             else
             {
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                Ingredient ingredient=ingredientCommandToIngredient.convert(command);
+                ingredient.setRecipe(recipe);
+                recipe.addIngredient(ingredient);
             }
 
-            return (recipeRepository.save(recipe)).getIngredients().stream()
-                    .filter(x->x.getId().equals(command.getId())).map(x->ingredientToIngredientCommand.convert(x)).findFirst().orElse(null);
+            Recipe savedRecipe = recipeRepository.save(recipe);
+
+            Optional<Ingredient> savedIngredientOptional=savedRecipe.getIngredients().stream()
+                    .filter(recipeIngredients->recipeIngredients.getId().equals(command.getId()))
+                    .findFirst();
+
+
+            if(!savedIngredientOptional.isPresent()) {
+
+                savedIngredientOptional = savedRecipe.getIngredients().stream()
+                        .filter(recipeIngredients -> recipeIngredients.getDescription().equals(command.getDescription()))
+                        .filter(recipeIngredients -> recipeIngredients.getAmount().equals(command.getAmount()))
+                        .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
+                        .findFirst();
+
+            }
+
+
+            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
+        }
+
+
+    }
+
+    @Override
+    public void deleteById(Long recipeId, Long id) {
+        log.debug("Deleting ingredient: " + recipeId + ":" + id);
+
+        Optional<Recipe> recipeOptional = recipeRepository.findById(recipeId);
+
+        if(recipeOptional.isPresent())
+        {
+            Recipe recipe = recipeOptional.get();
+
+            log.debug("recipe found");
+
+            Optional<Ingredient> ingredientOptional = recipe.getIngredients()
+                    .stream().filter(ingredient -> ingredient.getId().equals(id))
+                    .findFirst();
+
+            if(ingredientOptional.isPresent())
+            {
+                log.debug("Ingredient with Id: " + id + "found");
+
+                Ingredient ingredient = ingredientOptional.get();
+
+                log.info("size of ingredient before removal: " + recipe.getIngredients().size());
+
+                recipe.getIngredients().stream().forEach(System.out::println);
+                ingredient.setRecipe(null);
+                recipe.getIngredients().remove(ingredient);
+
+                log.info("size of ingredient  after removal: " + recipe.getIngredients().size());
+                recipe.getIngredients().stream().forEach(System.out::println);
+                recipeRepository.save(recipe);
+            }
+            else
+            {
+                log.error("inggredient with Id: " + id + " Not found");
+            }
+        }
+        else{
+            log.error("recipe with id: " + recipeId + " Not Found !");
         }
 
 

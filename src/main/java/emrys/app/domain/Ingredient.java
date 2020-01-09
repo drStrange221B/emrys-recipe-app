@@ -1,7 +1,6 @@
 package emrys.app.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,9 +8,11 @@ import java.math.BigDecimal;
 /**
  * Created by jt on 6/13/17.
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = {"recipe"})
 @Entity
+//@ToString
 public class Ingredient {
 
     @Id
@@ -41,5 +42,6 @@ public class Ingredient {
         this.uom = uom;
         this.recipe = recipe;
     }
+
 
 }
