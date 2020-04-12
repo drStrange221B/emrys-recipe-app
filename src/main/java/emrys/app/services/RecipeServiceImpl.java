@@ -4,6 +4,7 @@ import emrys.app.commands.RecipeCommand;
 import emrys.app.converters.RecipeCommandToRecipe;
 import emrys.app.converters.RecipeToRecipeCommand;
 import emrys.app.domain.Recipe;
+import emrys.app.exceptions.NotFoundException;
 import emrys.app.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         if(!recipe.isPresent())
         {
-            throw new RuntimeException("Recipe Not Found!");
+            throw new NotFoundException("Recipe Not Found for ID value: " + id.toString());
         }
 
         return recipe.get();
