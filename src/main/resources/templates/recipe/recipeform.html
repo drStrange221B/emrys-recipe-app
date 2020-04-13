@@ -26,11 +26,15 @@
 
             <form th:object="${recipe}" th:action="@{/recipe/}" method="post">
 
+                <div th:if="${#fields.hasErrors('*')}" class = "alert alert-danger">
+                    <p>Please Correct Errors Below</p>
+
+                </div>
 
                 <input th:field="*{id}" type="hidden"/>
 
 
-                <div class="pannel-group">
+                <div class="panel-group">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h1 class="panel-title">Edit Recipe Information</h1>
@@ -39,7 +43,16 @@
                             <div class="row">
                                 <div class="col-md-4 form-group">
                                     <label>Recipe Description:</label>
-                                    <input type="text" class="form-control" th:field="*{description}"/>
+                                    <input type="text" class="form-control" th:field="*{description}" th:errorclass="has-error"/>
+                                    <span class="help-block" th:if="${#fields.hasErrors('description')}">
+                                        <ul>
+                                            <li th:each="err:${#fields.errors('description')}" th:text="${err}"/>
+
+<!--                                        <li th:each="err : ${#fields.errors('description')}" th:text="${err}"/>-->
+                                        </ul>
+
+                                    </span>
+
                                 </div>
                             </div>
                             <div class="row">
@@ -66,13 +79,23 @@
                                     <label>
                                         Prep Time:
                                     </label>
-                                    <input type="text" th:field="*{prepTime}" class="form-control">
+                                    <input type="text" th:field="*{prepTime}" class="form-control" th:errorclass="has-error">
+                                    <span th:if="${#fields.hasErrors('prepTime')}" >
+                                        <ul>
+                                            <li th:each="${#fields.errors('prepTime')}" th:text="${err}"/>
+                                        </ul>
+                                    </span>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>
                                         CookTime:
                                     </label>
-                                    <input type="text" class="form-control" th:field="*{cookTime}">
+                                    <input type="text" class="form-control" th:field="*{cookTime}" th:errorclass="has-error">
+                                    <span th:if="${#fields.hasErrors('cookTime')}">
+                                        <ul>
+                                            <li th:each="err:${#fields.errors('cookTime')}" th:text="${err}"/>
+                                        </ul>
+                                    </span>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>
@@ -92,7 +115,12 @@
                                     <label>
                                         Serving:
                                     </label>
-                                    <input type="text" th:field="*{servings}" class="form-control">
+                                    <input type="text" th:field="*{servings}" class="form-control" th:errorclass="has-error">
+                                    <span th:if="${#fields.hasErrors('servings')}">
+                                        <ul>
+                                            <li th:each="err:${#fields.errors('servings')}" th:text="err"/>
+                                        </ul>
+                                    </span>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>
@@ -104,7 +132,12 @@
                                     <label>
                                         URL:
                                     </label>
-                                    <input type="text" th:field="*{url}" class="form-control">
+                                    <input type="text" th:field="*{url}" class="form-control" th:errorclass="has-error">
+                                    <span th:if="${#fields.hasErrors('url')}">
+                                        <ul>
+                                            <li th:each="err:${#fields.errors('url')}" th:text="${err}"/>
+                                        </ul>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +185,14 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12 form-group">
-                                    <textarea class="form-control" rows="3" th:field="*{directions}"></textarea>
+                                    <textarea class="form-control" rows="3" th:field="*{directions}" th:errorclass="has-error"></textarea>
+                                    <span th:if="${#fields.hasErrors('directions')}">
+                                    <ul>
+                                        <li th:each="err:${#fields.errors('directions')}" th:text="${err}">
+
+                                        </li>
+                                    </ul>
+                                    </span>
                                 </div>
                             </div>
                         </div>
